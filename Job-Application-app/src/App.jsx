@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Jobs from "./jobs";
-import Dashboard from "./Dashboard";
+import Login from "./Components/LoginPage/Login";
 
 function App() {
   return (
@@ -8,8 +8,10 @@ function App() {
       <nav>
         <p>JobConnect</p>
         <Link to="/jobs">Browse Jobs</Link> {/* ✅ now works */}
-        <Link to="/Dashboard">Dashboard</Link>
-        <button>Sign In</button>
+        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/login" className="btn btn-dark">
+          Sign In
+        </Link>
       </nav>
 
       <hr />
@@ -49,12 +51,14 @@ function App() {
         />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={<h1>Dashboard Page (coming soon)</h1>}
+        />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
-
-
