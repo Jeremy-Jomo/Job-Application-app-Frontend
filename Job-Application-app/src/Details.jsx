@@ -24,25 +24,16 @@ function Details() {
 
       {/* Job Header */}
       <div className="job-header">
-<<<<<<< HEAD
-        <img src={job.companyLogo} alt={job.company} width={50} />
-        <div className="card">
-          <div>
-            <h2>{job.title}</h2>
-            <p>{job.company}</p>
-            <p>{job.location}</p>
-            <p>
-              ${job.salaryMin} - ${job.salaryMax}
-            </p>
-            <p>Posted: {job.postedDate}</p>
-          </div>
-          <span className="badge">{job.type}</span>
-=======
         <div>
           <h2>{job.title}</h2>
-          <p><strong>Company Name:</strong>{job.company}</p>
-          <p><strong>Location:</strong>{job.location}</p>
->>>>>>> origin/main
+          <p>
+            <strong>Company Name:</strong>
+            {job.company}
+          </p>
+          <p>
+            <strong>Location:</strong>
+            {job.location}
+          </p>
         </div>
       </div>
 
@@ -60,20 +51,6 @@ function Details() {
           <button className="btn btn-dark mb-3">Apply Now</button>
         </div>
       </div>
-<<<<<<< HEAD
-
-      {/* About Company */}
-      <div className="card">
-        <div className="job-section">
-          <h3>About {job.company}</h3>
-          <p>{job.company}</p>
-          <p>{job.companyType}</p>
-          <p>{job.companySize} employees</p>
-          <p>{job.companyLocation}</p>
-        </div>
-      </div>
-=======
->>>>>>> origin/main
     </div>
   );
 }
