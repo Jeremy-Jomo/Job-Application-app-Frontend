@@ -6,12 +6,16 @@ import Dashboard from "./Dashboard";
 import Details from "./Details";
 import CreateAcc from "./Components/CreateAcc/CreateAcc";
 import ApplyPage from "./ApplyPage";
+import LandingPage from "./Components/LandingPage/LandingPage";
 
 function App() {
   return (
     <Router>
       <nav className="navbar navbar-expand-lg navbar-dark p-4">
         <h1>JobConnect</h1>
+        <Link to="/" className="btn btn-dark ms-3">
+          Home
+        </Link>
         <Link to="/jobs" className="btn btn-dark ms-3">
           Browse Jobs
         </Link>{" "}
@@ -31,31 +35,7 @@ function App() {
           path="/"
           element={
             <>
-              <div>
-                <h1>Connect Talent with Opportunity</h1>
-                <p>
-                  Whether you're seeking your dream job or looking to hire the
-                  best talent, JobConnect makes meaningful connections happen.
-                </p>
-              </div>
-
-              <div>
-                <h1>Why Choose JobConnect?</h1>
-                <p>
-                  Our platform brings together the best features for both job
-                  seekers and employers.
-                </p>
-              </div>
-
-              <div>
-                <h1>Ready to Get Started?</h1>
-                <p>
-                  Join thousands of job seekers and employers who have found
-                  success on our platform.
-                </p>
-                <button>Sign Up as Job Seeker</button>
-                <button>Post Your First Job</button>
-              </div>
+              <LandingPage />
             </>
           }
         />
