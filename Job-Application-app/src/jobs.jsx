@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from "react";
 
-function Home() {
+function Jobs() {
     const [jobs, setJobs] = useState([]);
 
     useEffect(() => {
@@ -37,4 +37,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Jobs;
