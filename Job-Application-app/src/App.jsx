@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Jobs from "./jobs";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <nav>
+        <p>JobConnect</p>
+        <Link to="/jobs">Browse Jobs</Link> {/* ✅ now works */}
+        <Link to="/dashboard">Dashboard</Link>
+        <button>Sign In</button>
+      </nav>
+
+      <hr />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <div>
+                <h1>Connect Talent with Opportunity</h1>
+                <p>
+                  Whether you're seeking your dream job or looking to hire the
+                  best talent, JobConnect makes meaningful connections happen.
+                </p>
+              </div>
+
+              <div>
+                <h1>Why Choose JobConnect?</h1>
+                <p>
+                  Our platform brings together the best features for both job
+                  seekers and employers.
+                </p>
+              </div>
+
+              <div>
+                <h1>Ready to Get Started?</h1>
+                <p>
+                  Join thousands of job seekers and employers who have found
+                  success on our platform.
+                </p>
+                <button>Sign Up as Job Seeker</button>
+                <button>Post Your First Job</button>
+              </div>
+            </>
+          }
+        />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/dashboard" element={<h1>Dashboard Page (coming soon)</h1>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
+
+
+
