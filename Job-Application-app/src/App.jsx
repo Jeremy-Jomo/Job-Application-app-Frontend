@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Jobs from "./jobs";
 import Login from "./Components/LoginPage/Login";
+
+import Dashboard from "./Dashboard";
+import Details from "./Details";
 import CreateAcc from "./Components/CreateAcc/CreateAcc";
 
 function App() {
@@ -51,10 +54,8 @@ function App() {
           }
         />
         <Route path="/jobs" element={<Jobs />} />
-        <Route
-          path="/dashboard"
-          element={<h1>Dashboard Page (coming soon)</h1>}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/jobs/:id" element={<Details />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<CreateAcc />}></Route>
         <Route />
