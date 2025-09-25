@@ -50,7 +50,9 @@ function Jobs() {
                   View Details
                 </Link>
 
-                <button className="btn btn-dark ">Apply Now</button>
+                <Link to={`/jobs/${job.id}/apply`}>
+                  <button>Apply Now</button>
+                </Link>
               </div>
             ))}
           </div>

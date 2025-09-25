@@ -8,7 +8,7 @@ function Details() {
 
   useEffect(() => {
     // Fetch the job details from backend (replace URL with your API)
-    fetch(`http://localhost:5000/jobs/${id}`)
+    fetch(`http://127.0.0.1:5000/jobs/${id}`)
       .then((res) => res.json())
       .then((data) => setJob(data))
       .catch((err) => console.error("Error fetching job details:", err));
@@ -24,6 +24,7 @@ function Details() {
 
       {/* Job Header */}
       <div className="job-header">
+<<<<<<< HEAD
         <img src={job.companyLogo} alt={job.company} width={50} />
         <div className="card">
           <div>
@@ -36,6 +37,12 @@ function Details() {
             <p>Posted: {job.postedDate}</p>
           </div>
           <span className="badge">{job.type}</span>
+=======
+        <div>
+          <h2>{job.title}</h2>
+          <p><strong>Company Name:</strong>{job.company}</p>
+          <p><strong>Location:</strong>{job.location}</p>
+>>>>>>> origin/main
         </div>
       </div>
 
@@ -53,6 +60,7 @@ function Details() {
           <button className="btn btn-dark mb-3">Apply Now</button>
         </div>
       </div>
+<<<<<<< HEAD
 
       {/* About Company */}
       <div className="card">
@@ -64,6 +72,8 @@ function Details() {
           <p>{job.companyLocation}</p>
         </div>
       </div>
+=======
+>>>>>>> origin/main
     </div>
   );
 }
