@@ -1,42 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // ✅ Import Link
+import { Link } from "react-router-dom";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    // Fetch jobs
     fetch("http://127.0.0.1:5000/jobs")
       .then((res) => res.json())
-      .then((data) => setJobs(data))
+      .then((data) => setJobs(data) || console.log(data))
       .catch((err) => console.error("Error fetching jobs.", err));
   }, []);
 
   return (
     <div>
-      <p>WELCOME!!!</p>
+      <h1>WELCOME!!!</h1>
       <p>Browse the latest job opportunities.</p>
 
       {/* Fallback message if no jobs */}
       {jobs.length === 0 && <p>No jobs available at the moment.</p>}
 
-      <div>
-        {jobs.map((job) => (
-          <div key={job.id}>
-            <h2>{job.title}</h2>
-            <p>{job.company}</p>
-            <p>{job.location}</p>
-            <p>{job.description}</p>
+      <div className="container mt-4">
+        <div className="row g-4 align-items-stretch">
+          {jobs.map((job) => (
+            <div key={job.id} className="col-md-6 d-flex">
+              <div
+                className="card shadow-lg rounded-4 p-4 flex-fill"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                <h2 className="mb-3 text-center ">{job.title}</h2>
 
-            {/* ✅ Link to job details */}
-            <Link to={`/jobs/${job.id}`}>
-              <button>View Details</button>
-            </Link>
+                <p className="mb-3 text-muted">
+                  💼 <strong>Company:</strong> {job.company}
+                </p>
+                <p className="mb-3 text-muted ">
+                  📍 <strong>Location:</strong> {job.location}
+                </p>
+                <p className="mb-3 text-muted">
+                  📝 <strong>Description:</strong> {job.description}
+                </p>
 
-            <Link to={`/jobs/${job.id}/apply`}>
-            <button>Apply Now</button></Link>
-          </div>
-        ))}
+                <div className="mt-auto">
+                  <Link
+                    to={`/jobs/${job.id}`}
+                    className="btn btn-dark  mb-3 me-2"
+                  >
+                    View Details
+                  </Link>
+                  <Link to={`/jobs/${job.id}/apply`}>
+                    <button className="btn btn-outline-dark">Apply Now</button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

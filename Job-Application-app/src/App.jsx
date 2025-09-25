@@ -10,10 +10,15 @@ import ApplyPage from "./ApplyPage";
 function App() {
   return (
     <Router>
-      <nav>
-        <p>JobConnect</p>
-        <Link to="/jobs">Browse Jobs</Link> {/* ✅ now works */}
-        <Link to="/dashboard">Dashboard</Link>
+      <nav className="navbar navbar-expand-lg navbar-dark p-4">
+        <h1>JobConnect</h1>
+        <Link to="/jobs" className="btn btn-dark ms-3">
+          Browse Jobs
+        </Link>{" "}
+        {/* ✅ now works */}
+        <Link to="/dashboard" className="btn btn-dark ms-3">
+          Dashboard
+        </Link>
         <Link to="/login" className="btn btn-dark ms-3">
           Sign In
         </Link>

@@ -26,21 +26,30 @@ function Details() {
       <div className="job-header">
         <div>
           <h2>{job.title}</h2>
-          <p><strong>Company Name:</strong>{job.company}</p>
-          <p><strong>Location:</strong>{job.location}</p>
+          <p>
+            <strong>Company Name:</strong>
+            {job.company}
+          </p>
+          <p>
+            <strong>Location:</strong>
+            {job.location}
+          </p>
         </div>
       </div>
 
       {/* Job Description */}
-      <div className="job-section">
-        <h3>Job Description</h3>
-        <p>{job.description}</p>
+      <div className="card">
+        <div className="job-section">
+          <h3>Job Description</h3>
+          <p>{job.description}</p>
+        </div>
       </div>
-
       {/* Apply */}
-      <div className="job-section">
-        <h3>Apply for this position</h3>
-        <button className="apply-btn">Apply Now</button>
+      <div className="card mb-3">
+        <div className="job-section">
+          <h3>Apply for this position</h3>
+          <button className="btn btn-dark mb-3">Apply Now</button>
+        </div>
       </div>
     </div>
   );
