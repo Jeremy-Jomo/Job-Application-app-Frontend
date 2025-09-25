@@ -1,7 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
+  const [message, setMessage] = useState("");
   // Validation schema with Yup
   const validationSchema = Yup.object({
     username: Yup.string().required("Username is required"),
@@ -9,7 +12,10 @@ function Login() {
   });
 
   // Handle form submission with fetch
-  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setErrors, resetForm }
+  ) => {
     fetch("http://localhost:5000/login", {
       method: "POST",
       headers: {
@@ -22,10 +28,15 @@ function Login() {
       )
       .then(({ ok, data }) => {
         if (ok && data.success) {
-          alert("✅ Login successful!");
+          setMessage("✅ Login successful!");
           // Example: save token or redirect
           // localStorage.setItem("token", data.token);
           // window.location.href = "/dashboard";
+          resetForm();
+
+          setTimeout(() => {
+            setMessage("");
+          }, 3000);
         } else {
           setErrors({ password: "Invalid username or password" });
         }
@@ -49,8 +60,10 @@ function Login() {
       }}
     >
       <div className="container mt-5">
-        <h1 className="mb-4 fw-bold text-dark ">Welcome Back</h1>
-        <h3 className="mb-4 fs-5 text-muted">sign in to your account</h3>
+        <h1 className="mb-4 fw-bold text-dark text-center ">Welcome Back</h1>
+        <h3 className="mb-4 fs-5 text-muted text-center">
+          Sign in to your account
+        </h3>
 
         <Formik
           initialValues={{ username: "", password: "" }}
@@ -108,6 +121,13 @@ function Login() {
               >
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
+              <p>
+                Dont have an account?{""}
+                <Link to="/register" className="text-dark fw-bold">
+                  Create Account
+                </Link>
+              </p>
+              {message && <div className="alert alert-info">{message}</div>}
             </Form>
           )}
         </Formik>
