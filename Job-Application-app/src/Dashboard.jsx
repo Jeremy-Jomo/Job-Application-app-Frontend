@@ -28,7 +28,7 @@ function Dashboard(){
           </div>
 
           <div>
-            <h2>Revent Applications</h2>
+            <h2>Recent Applications</h2>
             {applications.slice(0, 5).map((app) => (
                 <div key={app.id}>
                   <p><strong>Job:</strong> {app.title}</p>

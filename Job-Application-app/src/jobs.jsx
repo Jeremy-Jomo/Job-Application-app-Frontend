@@ -33,7 +33,8 @@ function Jobs() {
               <button>View Details</button>
             </Link>
 
-            <button>Apply Now</button>
+            <Link to={`/jobs/${job.id}/apply`}>
+            <button>Apply Now</button></Link>
           </div>
         ))}
       </div>
