@@ -1,6 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function CreateAcc() {
   //state for success message
@@ -173,6 +174,12 @@ function CreateAcc() {
             >
               Create Account
             </button>
+            <p>
+              Do you have an account?
+              <Link to="/login" className="text-dark fw-bold">
+                Login
+              </Link>
+            </p>
             {message && <div className="alert alert-info">{message}</div>}
           </Form>
         )}
