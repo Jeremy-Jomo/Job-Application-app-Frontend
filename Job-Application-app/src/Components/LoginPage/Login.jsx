@@ -9,7 +9,10 @@ function Login() {
   });
 
   // Handle form submission with fetch
-  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, setErrors, resetForm }
+  ) => {
     fetch("http://localhost:5000/login", {
       method: "POST",
       headers: {
@@ -26,6 +29,7 @@ function Login() {
           // Example: save token or redirect
           // localStorage.setItem("token", data.token);
           // window.location.href = "/dashboard";
+          resetForm();
         } else {
           setErrors({ password: "Invalid username or password" });
         }
