@@ -84,10 +84,10 @@ function LandingPage() {
             Join thousands of job seekers and employers who have found success
             on our platform.
           </p>
-          <a href="/signup" className="btn btn-dark btn-lg me-2">
+          <a href="/login" className="btn btn-dark btn-lg me-2">
             Sign Up as Job Seeker
           </a>
-          <a href="/post-job" className="btn btn-outline-dark btn-lg">
+          <a href="/login" className="btn btn-outline-dark btn-lg">
             Post Your First Job
           </a>
         </div>

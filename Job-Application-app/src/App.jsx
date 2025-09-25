@@ -12,6 +12,11 @@ function App() {
   return (
     <Router>
       <nav className="navbar navbar-expand-lg navbar-dark p-4">
+        <img
+          src="/logo/image.jpg.jpg"
+          alt="logo"
+          style={{ height: "50px", width: "auto", marginRight: "10px" }}
+        />
         <h1>JobConnect</h1>
         <Link to="/" className="btn btn-dark ms-3">
           Home
