@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Jobs from "./jobs";
 import Login from "./Components/LoginPage/Login";
+import CreateAcc from "./Components/CreateAcc/CreateAcc";
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
         <p>JobConnect</p>
         <Link to="/jobs">Browse Jobs</Link> {/* ✅ now works */}
         <Link to="/dashboard">Dashboard</Link>
-        <Link to="/login" className="btn btn-dark">
+        <Link to="/login" className="btn btn-dark ms-3">
           Sign In
         </Link>
       </nav>
@@ -55,6 +56,8 @@ function App() {
           element={<h1>Dashboard Page (coming soon)</h1>}
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<CreateAcc />}></Route>
+        <Route />
       </Routes>
     </Router>
   );

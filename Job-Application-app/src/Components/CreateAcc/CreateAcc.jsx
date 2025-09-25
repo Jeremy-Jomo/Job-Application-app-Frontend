@@ -1,13 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import React from "react";
+import React, { useState } from "react";
 
 function CreateAcc() {
+  //state for success message
+  const [message, setMessage] = useState("");
   const initialData = {
     username: "",
     email: "",
     password: "",
-    role: "",
+    role: "jobseeker", //deafult to avoid empty value error
     confirmPassword: "",
   };
 
@@ -24,6 +26,7 @@ function CreateAcc() {
       .required("Confirm Password is required"),
   });
 
+  //handle form submission with fetch
   function handleSubmit(values, { setSubmitting, resetForm, setErrors }) {
     fetch("http://localhost:5000/users", {
       method: "POST",
@@ -37,8 +40,13 @@ function CreateAcc() {
       )
       .then(({ ok, data }) => {
         if (ok && data.success) {
-          alert("✅ Account created successfully!");
+          setMessage("✅ Account created successfully!");
           resetForm();
+
+          //message should disappear after 3 seconds
+          setTimeout(() => {
+            setMessage("");
+          }, 3000);
         } else {
           setErrors({ email: data.message || "Registration failed" });
         }
@@ -60,7 +68,14 @@ function CreateAcc() {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
-          <Form className="card shadow-lg rounded-4 p-5 mx-auto mt-2">
+          <Form
+            className="card shadow-lg rounded-4 p-5 mx-auto mt-2"
+            style={{
+              maxWidth: "500px",
+              width: "100%",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
             <h1 className="mb-3 fw-bold">Create Account</h1>
             <h3 className="mb-4 fs-6 text-muted">Join our platform today</h3>
             <div className="mb-3">
@@ -158,6 +173,7 @@ function CreateAcc() {
             >
               Create Account
             </button>
+            {message && <div className="alert alert-info">{message}</div>}
           </Form>
         )}
       </Formik>
