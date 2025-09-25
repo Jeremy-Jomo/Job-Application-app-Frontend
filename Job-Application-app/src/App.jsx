@@ -5,6 +5,7 @@ import Login from "./Components/LoginPage/Login";
 import Dashboard from "./Dashboard";
 import Details from "./Details";
 import CreateAcc from "./Components/CreateAcc/CreateAcc";
+import ApplyPage from "./ApplyPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/jobs/:id" element={<Details />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/jobs/:id/apply" element={<ApplyPage />} />
         <Route path="/register" element={<CreateAcc />}></Route>
         <Route />
       </Routes>
