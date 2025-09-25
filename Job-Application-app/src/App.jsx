@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Jobs from "./jobs";
 import Login from "./Components/LoginPage/Login";
+import Dashboard from "./Dashboard";
+import Details from "./Details";
 
 function App() {
   return (
@@ -51,10 +53,7 @@ function App() {
         />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route
-          path="/dashboard"
-          element={<h1>Dashboard Page (coming soon)</h1>}
-        />
+        <Route path="/jobs/:id" element={<Details />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
