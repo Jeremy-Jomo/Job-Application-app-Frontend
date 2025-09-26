@@ -1,19 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function ApplicationForm({ jobId }) {
+  const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
 
+  // ✅ Fetch logged-in user info
+  useEffect(() => {
+    fetch("http://localhost:5000/check-session", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.logged_in) {
+          setUser(data.user);
+          setName(data.user.username || "");
+          setEmail(data.user.email || "");
+        }
+      })
+      .catch((err) => console.error("Failed to load user info:", err));
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!user) return alert("You must be logged in to apply.");
 
     fetch("http://localhost:5000/applications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({
         job_id: jobId,
-        user_id: 1, // 🔑 eventually replace with logged-in user
+        user_id: user.id,
         name,
         email,
         cover_letter: coverLetter,
@@ -22,10 +39,8 @@ function ApplicationForm({ jobId }) {
       .then((res) => res.json())
       .then((data) => {
         console.log("✅ Application created:", data);
-        alert("Application submitted successfully!");
-        setName("");
-        setEmail("");
         setCoverLetter("");
+        alert("Application submitted successfully!");
       })
       .catch((err) => console.error("❌ Error submitting application:", err));
   };
@@ -43,7 +58,6 @@ function ApplicationForm({ jobId }) {
         <input
           type="text"
           className="form-control rounded-3"
-          placeholder="Enter your full name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -55,7 +69,6 @@ function ApplicationForm({ jobId }) {
         <input
           type="email"
           className="form-control rounded-3"
-          placeholder="Enter your email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required

@@ -4,13 +4,11 @@ function JobseekerDashboard() {
   const [user, setUser] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState(null); // inline feedback message
+  const [message, setMessage] = useState(null);
 
-  // 1️⃣ Check logged-in user
+  // ✅ 1. Load logged-in user
   useEffect(() => {
-    fetch("http://localhost:5000/check-session", {
-      credentials: "include",
-    })
+    fetch("http://localhost:5000/check-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.logged_in) setUser(data.user);
@@ -20,49 +18,53 @@ function JobseekerDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  // 2️⃣ Fetch applications
-  const fetchApplications = () => {
+  // ✅ 2. Fetch applications with job info
+  useEffect(() => {
     if (!user) return;
 
-    fetch(`http://localhost:5000/users/${user.id}/applications`, {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message) setApplications([]);
-        else setApplications(data);
-      })
-      .catch((err) => console.error("Error fetching applications:", err));
-  };
+    const fetchApplications = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/users/${user.id}/applications`,
+          { credentials: "include" }
+        );
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setApplications(data);
+        } else {
+          setApplications([]);
+        }
+      } catch (err) {
+        console.error("Error fetching applications:", err);
+      }
+    };
 
-  useEffect(() => {
     fetchApplications();
   }, [user]);
 
-  // 3️⃣ Withdraw an application
+  // ✅ 3. Withdraw an application
   const handleWithdraw = async (id) => {
     const removedApp = applications.find((app) => app.id === id);
     if (!removedApp) return;
 
-    // Optimistic UI update
+    // Optimistic UI
     setApplications(applications.filter((app) => app.id !== id));
-    setMessage(`Withdrawing "${removedApp.job?.title}"...`);
+    setMessage(`Withdrawing "${removedApp.job?.title || "job"}"...`);
 
     try {
       const res = await fetch(`http://localhost:5000/applications/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Failed to withdraw application");
-
-      setMessage(`Application for "${removedApp.job?.title}" withdrawn.`);
+      if (!res.ok) throw new Error("Failed to withdraw");
+      setMessage(
+        `Application for "${removedApp.job?.title || "job"}" withdrawn.`
+      );
     } catch (err) {
       console.error(err);
-      // rollback if deletion failed
-      setApplications((prev) => [...prev, removedApp]);
+      setApplications((prev) => [...prev, removedApp]); // rollback
       setMessage("Failed to withdraw application.");
     } finally {
-      // auto-hide message after 3s
       setTimeout(() => setMessage(null), 3000);
     }
   };
@@ -76,7 +78,7 @@ function JobseekerDashboard() {
       </p>
     );
 
-  // Stats
+  // ✅ Stats
   const total = applications.length;
   const pending = applications.filter((a) => a.status === "pending").length;
   const accepted = applications.filter((a) => a.status === "accepted").length;
@@ -88,7 +90,6 @@ function JobseekerDashboard() {
         🎯 Jobseeker Dashboard
       </h1>
 
-      {/* Inline feedback message */}
       {message && (
         <div className="alert alert-info text-center py-2 mb-4">{message}</div>
       )}
@@ -150,10 +151,14 @@ function JobseekerDashboard() {
                 >
                   <div>
                     <h6 className="fw-bold mb-1 text-dark">
-                      {app.job?.title}{" "}
-                      <span className="text-muted">@ {app.job?.company}</span>
+                      {app.job?.title || "Job Title"}{" "}
+                      <span className="text-muted">
+                        @ {app.job?.company || "Company"}
+                      </span>
                     </h6>
-                    <small className="text-muted">📍 {app.job?.location}</small>
+                    <small className="text-muted">
+                      📍 {app.job?.location || "Location"}
+                    </small>
                   </div>
 
                   <div className="d-flex align-items-center gap-2">
@@ -168,6 +173,7 @@ function JobseekerDashboard() {
                     >
                       {app.status}
                     </span>
+
                     <button
                       className="btn btn-sm btn-outline-danger"
                       onClick={() => handleWithdraw(app.id)}
