@@ -16,10 +16,10 @@ function Dashboard(){
     const rejected = applications.filter(app => app.status === "rejected").length;
 
     return (
-        <div>
-          <h1>Dashboard</h1>
+        <div className="container py-5">
+          <h1 className="fw-bold mb-4 text-center">📊 Dashboard</h1>
 
-          <div>
+          <div className="row g-4 mb-5">
             <h2>Overview</h2>
             <p>Total Applications: {totalApplications}</p>
             <p>Pending Reviews: {pending}</p>
