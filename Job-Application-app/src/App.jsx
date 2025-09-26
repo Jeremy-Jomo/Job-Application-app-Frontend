@@ -10,6 +10,7 @@ import CreateAcc from "./Components/CreateAcc/CreateAcc";
 import ApplyPage from "./ApplyPage";
 import LandingPage from "./Components/LandingPage/LandingPage";
 import EmployerDashboard from "./Components/EmployerDashboard/EmployerDash";
+import JobseekerDashboard from "./Components/JobseekerDashboard/Jobseeker";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,7 +58,7 @@ function App() {
           <Link to="/jobs" className="btn btn-outline-light ms-3">
             Browse Jobs
           </Link>
-          {user?.role === "jobseeker" && (
+          {user?.role?.toLowerCase() === "jobseeker" && (
             <Link
               to="/dashboard-jobseeker"
               className="btn btn-outline-light ms-3"
@@ -65,7 +66,7 @@ function App() {
               Dashboard
             </Link>
           )}
-          {user?.role === "employer" && (
+          {user?.role?.toLowerCase() === "employer" && (
             <Link
               to="/dashboard-employer"
               className="btn btn-outline-light ms-3"
@@ -96,7 +97,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/jobs" element={<Jobs />} />
-        <Route path="/dashboard-jobseeker" element={<Dashboard />} />
+        <Route path="/dashboard-jobseeker" element={<JobseekerDashboard />} />
         <Route path="/jobs/:id" element={<Details />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/jobs/:id/apply" element={<ApplyPage />} />
