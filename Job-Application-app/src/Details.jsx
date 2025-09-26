@@ -19,18 +19,19 @@ function Details() {
   }
 
   return (
-    <div className="job-details">
-      <Link to="/jobs">⬅ Back to Jobs</Link>
-
+    <div className="container py-5">
+      <div className="mb-4">
+        <Link to="/jobs" className="text-decoration-none text-primary fw-bold">⬅ Back to Jobs</Link>
+      </div>
       {/* Job Header */}
-      <div className="job-header">
-        <div>
-          <h2>{job.title}</h2>
-          <p>
+      <div className="card shadow-sm border-0 mb-4 rounded-4">
+        <div className="card-body">
+          <h2 className="fw-bold text-dark">{job.title}</h2>
+          <p className="mb-1">
             <strong>Company Name:</strong>
             {job.company}
           </p>
-          <p>
+          <p className="mb-1">
             <strong>Location:</strong>
             {job.location}
           </p>
@@ -38,19 +39,19 @@ function Details() {
       </div>
 
       {/* Job Description */}
-      <div className="card">
-        <div className="job-section">
-          <h3>Job Description</h3>
-          <p>{job.description}</p>
+      <div className="card shadow-sm border-0 mb-4 rounded-4">
+        <div className="card-body">
+          <h3 className="fw-bold mb-3">Job Description</h3>
+          <p className="text-muted">{job.description}</p>
         </div>
       </div>
       {/* Apply */}
-      <div className="card mb-3">
-        <div className="job-section">
-          <h3>Apply for this position</h3>
-          <button className="btn btn-dark mb-3">Apply Now</button>
+      {/* <div className="card shadow-sm border-0 rounded-4">
+        <div className="card-body text-center">
+          <h3 className="fw-bold mb-3">Apply for this position</h3>
+          <button className="btn btn-primary btn-lg shadow-sm">Apply Now</button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

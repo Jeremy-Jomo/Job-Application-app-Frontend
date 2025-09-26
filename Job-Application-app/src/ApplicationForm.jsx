@@ -13,6 +13,7 @@ function ApplicationForm({ jobId }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         job_id: jobId,
+        user_id: 1,
         name,
         email,
         cover_letter: coverLetter,

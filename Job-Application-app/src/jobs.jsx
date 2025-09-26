@@ -13,8 +13,7 @@ function Jobs() {
 
   return (
     <div>
-      <h1>WELCOME!!!</h1>
-      <p>Browse the latest job opportunities.</p>
+      <p className="fw-bold mb-3 text-center">Browse the latest job opportunities.</p>
 
       {/* Fallback message if no jobs */}
       {jobs.length === 0 && <p>No jobs available at the moment.</p>}
