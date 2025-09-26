@@ -13,7 +13,7 @@ function LandingPage() {
             talent, <strong>JobConnect</strong> makes meaningful connections
             happen.
           </p>
-          <a href="/dashboard" className="btn btn-dark btn-lg">
+          <a href="/dashboard-jobseeker" className="btn btn-dark btn-lg">
             Go to Dashboard
           </a>
         </div>

@@ -1,58 +1,47 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
+const validationSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
+
+function Login({ setUser }) {
   const [message, setMessage] = useState("");
-  // Validation schema with Yup
-  const validationSchema = Yup.object({
-    username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is required"),
-  });
+  const navigate = useNavigate();
 
-  // Handle form submission with fetch
-  const handleSubmit = async (
-    values,
-    { setSubmitting, setErrors, resetForm }
-  ) => {
+  const handleSubmit = (values, { setSubmitting }) => {
     fetch("http://localhost:5000/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // 🔑 keep session cookie
       body: JSON.stringify(values),
     })
-      .then((response) =>
-        response.json().then((data) => ({ ok: response.ok, data }))
-      )
-      .then(({ ok, data }) => {
-        if (ok && data.success) {
-          setMessage("✅ Login successful!");
-          // Example: save token or redirect
-          // localStorage.setItem("token", data.token);
-          // window.location.href = "/dashboard";
-          resetForm();
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          // ✅ Save user in React state immediately
+          setUser(data.user);
 
-          setTimeout(() => {
-            setMessage("");
-          }, 3000);
+          // ✅ Redirect based on role
+          if (data.user.role.toLowerCase() === "employer") {
+            navigate("/dashboard-employer");
+          } else {
+            navigate("/dashboard-jobseeker");
+          }
         } else {
-          setErrors({ password: "Invalid username or password" });
+          setMessage(data.message || "Login failed");
         }
       })
-      .catch((error) => {
-        console.error("Error during login:", error);
-        setErrors({ password: "Something went wrong" });
-      })
-      .finally(() => {
-        setSubmitting(false); // ✅ re-enable button
-      });
+      .catch(() => setMessage("Something went wrong"))
+      .finally(() => setSubmitting(false));
   };
 
   return (
     <div
-      className="card shadow-lg rounded-4 p-5 mx-auto mt-2 "
+      className="card shadow-lg rounded-4 p-5 mx-auto mt-2"
       style={{
         maxWidth: "500px",
         width: "100%",
@@ -60,7 +49,7 @@ function Login() {
       }}
     >
       <div className="container mt-5">
-        <h1 className="mb-4 fw-bold text-dark text-center ">Welcome Back</h1>
+        <h1 className="mb-4 fw-bold text-dark text-center">Welcome Back</h1>
         <h3 className="mb-4 fs-5 text-muted text-center">
           Sign in to your account
         </h3>
@@ -83,8 +72,8 @@ function Login() {
                 <Field
                   type="text"
                   name="username"
-                  className="form-control"
                   id="username"
+                  className="form-control"
                   placeholder="Enter your username"
                 />
                 <ErrorMessage
@@ -102,8 +91,8 @@ function Login() {
                 <Field
                   type="password"
                   name="password"
-                  className="form-control"
                   id="password"
+                  className="form-control"
                   placeholder="Enter your password"
                 />
                 <ErrorMessage
@@ -121,13 +110,19 @@ function Login() {
               >
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
+
+              {/* Register link */}
               <p>
-                Dont have an account?{""}
+                Don’t have an account?{" "}
                 <Link to="/register" className="text-dark fw-bold">
                   Create Account
                 </Link>
               </p>
-              {message && <div className="alert alert-info">{message}</div>}
+
+              {/* Message */}
+              {message && (
+                <div className="alert alert-info mt-3">{message}</div>
+              )}
             </Form>
           )}
         </Formik>
