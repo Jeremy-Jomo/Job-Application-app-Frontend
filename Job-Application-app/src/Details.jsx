@@ -8,7 +8,7 @@ function Details() {
 
   useEffect(() => {
     // Fetch the job details from backend (replace URL with your API)
-    fetch(`http://127.0.0.1:5000/jobs/${id}`)
+    fetch(`https://jobconnect-zjzn.onrender.com/jobs/${id}`)
       .then((res) => res.json())
       .then((data) => setJob(data))
       .catch((err) => console.error("Error fetching job details:", err));

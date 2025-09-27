@@ -8,7 +8,7 @@ function ApplicationForm({ jobId }) {
 
   // ✅ Fetch logged-in user info
   useEffect(() => {
-    fetch("http://localhost:5000/check-session", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.logged_in) {
@@ -24,7 +24,7 @@ function ApplicationForm({ jobId }) {
     e.preventDefault();
     if (!user) return alert("You must be logged in to apply.");
 
-    fetch("http://localhost:5000/applications", {
+    fetch("https://jobconnect-zjzn.onrender.com/applications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

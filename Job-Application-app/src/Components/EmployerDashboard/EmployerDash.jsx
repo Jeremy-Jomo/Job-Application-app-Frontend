@@ -15,7 +15,7 @@ function EmployerDashboard() {
   const [selectedApp, setSelectedApp] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/check-session", {
+    fetch("https://jobconnect-zjzn.onrender.com/check-session", {
       method: "GET",
       credentials: "include",
     })
@@ -40,7 +40,7 @@ function EmployerDashboard() {
 
   // ✅ Fetch jobs
   const fetchEmployerJobs = (employerId) => {
-    fetch("http://localhost:5000/jobs", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/jobs", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         const employerJobs = data.filter((job) => job.user_id === employerId);
@@ -52,7 +52,7 @@ function EmployerDashboard() {
 
   // ✅ Fetch applications
   const fetchApplications = () => {
-    fetch("http://localhost:5000/applications", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/applications", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setApplications(data))
       .catch((err) => console.error("Error fetching applications:", err));
@@ -88,7 +88,7 @@ function EmployerDashboard() {
 
   // ✅ Delete job
   const deleteJob = (jobId) => {
-    fetch(`http://localhost:5000/jobs/${jobId}`, {
+    fetch(`https://jobconnect-zjzn.onrender.com/jobs/${jobId}`, {
       method: "DELETE",
       credentials: "include",
     })
@@ -102,7 +102,7 @@ function EmployerDashboard() {
 
   // ✅ Update application status
   const updateAppStatus = (appId, newStatus) => {
-    fetch(`http://localhost:5000/applications/${appId}`, {
+    fetch(`https://jobconnect-zjzn.onrender.com/applications/${appId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -129,7 +129,7 @@ function EmployerDashboard() {
   const handleJobPost = (values, { resetForm }) => {
     if (!user) return;
 
-    fetch("http://localhost:5000/jobs", {
+    fetch("https://jobconnect-zjzn.onrender.com/jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

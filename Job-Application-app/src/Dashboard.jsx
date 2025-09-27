@@ -4,7 +4,7 @@ function Dashboard(){
     const [applications, setApplications] = useState([]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/applications")
+        fetch("https://jobconnect-zjzn.onrender.com/applications")
         .then((res) => res.json())
         .then((data) => setApplications(data))
         .catch((err) => console.error("Error fetching application", err));

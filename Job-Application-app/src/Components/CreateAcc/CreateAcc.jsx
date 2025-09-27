@@ -29,7 +29,7 @@ function CreateAcc() {
 
   //handle form submission with fetch
   function handleSubmit(values, { setSubmitting, resetForm, setErrors }) {
-    fetch("http://localhost:5000/users", {
+    fetch("https://jobconnect-zjzn.onrender.com/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
