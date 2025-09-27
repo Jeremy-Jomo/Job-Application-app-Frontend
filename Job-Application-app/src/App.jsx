@@ -17,7 +17,7 @@ function App() {
 
   // ✅ Check session when app mounts
   useEffect(() => {
-    fetch("http://localhost:5000/check-session", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.logged_in) {
@@ -29,7 +29,7 @@ function App() {
 
   // ✅ Handle logout
   const handleLogout = () => {
-    fetch("http://localhost:5000/logout", {
+    fetch("https://jobconnect-zjzn.onrender.com/logout", {
       method: "POST",
       credentials: "include",
     })

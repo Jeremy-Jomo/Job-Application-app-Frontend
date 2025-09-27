@@ -13,7 +13,7 @@ function Login({ setUser }) {
   const navigate = useNavigate();
 
   const handleSubmit = (values, { setSubmitting }) => {
-    fetch("http://localhost:5000/login", {
+    fetch("https://jobconnect-zjzn.onrender.com/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // 🔑 keep session cookie

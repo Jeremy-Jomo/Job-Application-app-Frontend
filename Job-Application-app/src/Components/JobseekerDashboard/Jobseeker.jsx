@@ -8,7 +8,7 @@ function JobseekerDashboard() {
 
   // ✅ 1. Load logged-in user
   useEffect(() => {
-    fetch("http://localhost:5000/check-session", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.logged_in) setUser(data.user);
@@ -25,7 +25,7 @@ function JobseekerDashboard() {
     const fetchApplications = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/users/${user.id}/applications`,
+          `https://jobconnect-zjzn.onrender.com/users/${user.id}/applications`,
           { credentials: "include" }
         );
         const data = await res.json();
@@ -52,7 +52,7 @@ function JobseekerDashboard() {
     setMessage(`Withdrawing "${removedApp.job?.title || "job"}"...`);
 
     try {
-      const res = await fetch(`http://localhost:5000/applications/${id}`, {
+      const res = await fetch(`https://jobconnect-zjzn.onrender.com/applications/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
