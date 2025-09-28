@@ -92,7 +92,6 @@ function App() {
       </nav>
 
       <hr />
-
       {/* ✅ Routes */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
