@@ -7,6 +7,8 @@ function EmployerDashboard() {
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);
 
   // ✅ Modal state
   const [showModal, setShowModal] = useState(false);
@@ -20,42 +22,86 @@ function EmployerDashboard() {
       credentials: "include",
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Not logged in");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
         return res.json();
       })
       .then((data) => {
+        console.log("Session check response:", data); // Debug log
         if (data.logged_in && data.user.role.toLowerCase() === "employer") {
           setUser(data.user);
           fetchEmployerJobs(data.user.id);
+        } else if (
+          data.logged_in &&
+          data.user.role.toLowerCase() !== "employer"
+        ) {
+          setMessage("Access denied. This dashboard is for employers only.");
+          setUser(null);
         } else {
-          alert("Unauthorized. Please log in as an employer.");
-          window.location.href = "/login";
+          setMessage("You must be logged in to access this page.");
+          setUser(null);
         }
       })
-      .catch(() => {
-        alert("You must be logged in.");
-        window.location.href = "/login";
-      });
+      .catch((err) => {
+        console.error("Session check failed:", err);
+        setMessage("Failed to load session. Please try logging in again.");
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // ✅ Fetch jobs
-  const fetchEmployerJobs = (employerId) => {
-    fetch("https://jobconnect-zjzn.onrender.com/jobs", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        const employerJobs = data.filter((job) => job.user_id === employerId);
-        setJobs(employerJobs);
-        if (employerJobs.length > 0) fetchApplications();
-      })
-      .catch((err) => console.error("Error fetching jobs:", err));
+  const fetchEmployerJobs = async (employerId) => {
+    try {
+      console.log("Fetching jobs for employer:", employerId); // Debug log
+      const res = await fetch("https://jobconnect-zjzn.onrender.com/jobs", {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("All jobs response:", data); // Debug log
+
+      const employerJobs = data.filter((job) => job.user_id === employerId);
+      console.log("Employer jobs:", employerJobs); // Debug log
+
+      setJobs(employerJobs);
+
+      if (employerJobs.length > 0) {
+        await fetchApplications();
+      }
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
+      setMessage("Failed to load jobs. Please refresh the page.");
+    }
   };
 
   // ✅ Fetch applications
-  const fetchApplications = () => {
-    fetch("https://jobconnect-zjzn.onrender.com/applications", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => setApplications(data))
-      .catch((err) => console.error("Error fetching applications:", err));
+  const fetchApplications = async () => {
+    try {
+      const res = await fetch(
+        "https://jobconnect-zjzn.onrender.com/applications",
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("Applications response:", data); // Debug log
+      setApplications(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetching applications:", err);
+      setMessage("Failed to load applications.");
+      setApplications([]);
+    }
   };
 
   // ✅ Open modal for actions
@@ -87,34 +133,60 @@ function EmployerDashboard() {
   };
 
   // ✅ Delete job
-  const deleteJob = (jobId) => {
-    fetch(`https://jobconnect-zjzn.onrender.com/jobs/${jobId}`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to delete job");
-        setJobs((prev) => prev.filter((job) => job.id !== jobId));
-        setApplications((prev) => prev.filter((app) => app.job_id !== jobId));
-      })
-      .catch((err) => console.error("Error deleting job:", err));
+  const deleteJob = async (jobId) => {
+    try {
+      const res = await fetch(
+        `https://jobconnect-zjzn.onrender.com/jobs/${jobId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setJobs((prev) => prev.filter((job) => job.id !== jobId));
+      setApplications((prev) => prev.filter((app) => app.job_id !== jobId));
+      setMessage("Job deleted successfully.");
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      setMessage("Failed to delete job. Please try again.");
+      setTimeout(() => setMessage(null), 3000);
+    }
   };
 
   // ✅ Update application status
-  const updateAppStatus = (appId, newStatus) => {
-    fetch(`https://jobconnect-zjzn.onrender.com/applications/${appId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ status: newStatus }),
-    })
-      .then((res) => res.json())
-      .then((updatedApp) => {
-        setApplications((prev) =>
-          prev.map((app) => (app.id === updatedApp.id ? updatedApp : app))
-        );
-      })
-      .catch((err) => console.error("Error updating application:", err));
+  const updateAppStatus = async (appId, newStatus) => {
+    try {
+      const res = await fetch(
+        `https://jobconnect-zjzn.onrender.com/applications/${appId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const updatedApp = await res.json();
+      setApplications((prev) =>
+        prev.map((app) => (app.id === updatedApp.id ? updatedApp : app))
+      );
+
+      setMessage(`Application ${newStatus} successfully.`);
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err) {
+      console.error("Error updating application:", err);
+      setMessage("Failed to update application status. Please try again.");
+      setTimeout(() => setMessage(null), 3000);
+    }
   };
 
   // ✅ Job validation
@@ -126,40 +198,82 @@ function EmployerDashboard() {
   });
 
   // ✅ Post new job
-  const handleJobPost = (values, { resetForm }) => {
-    if (!user) return;
+  const handleJobPost = async (values, { resetForm, setSubmitting }) => {
+    if (!user) {
+      setMessage("You must be logged in to post a job.");
+      setSubmitting(false);
+      return;
+    }
 
-    fetch("https://jobconnect-zjzn.onrender.com/jobs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ ...values, user_id: user.id }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to post job");
-        return res.json();
-      })
-      .then((data) => {
-        setJobs([...jobs, data]);
-        resetForm();
-      })
-      .catch((err) => {
-        console.error("Error posting job:", err);
-        alert("Failed to post job");
+    try {
+      const res = await fetch("https://jobconnect-zjzn.onrender.com/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(values),
       });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setJobs((prev) => [...prev, data]);
+      resetForm();
+      setMessage("Job posted successfully!");
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err) {
+      console.error("Error posting job:", err);
+      setMessage("Failed to post job. Please try again.");
+      setTimeout(() => setMessage(null), 3000);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="container py-5">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="container py-5">
+        <div className="alert alert-danger text-center">
+          <h4>Access Denied</h4>
+          <p>You must be logged in as an employer to view this page.</p>
+          <a href="/login" className="btn btn-primary">
+            Go to Login
+          </a>
+        </div>
+        {message && (
+          <div className="alert alert-info text-center mt-3">{message}</div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
-      {user && (
-        <h2 className="fw-bold text-center mb-4 text-dark">
-          Welcome, {user.username}!
-        </h2>
+      <h2 className="fw-bold text-center mb-4 text-dark">
+        Welcome, {user.username}!
+      </h2>
+
+      {message && (
+        <div className="alert alert-info text-center py-2 mb-4">{message}</div>
       )}
 
       {/* ✅ Job Post Form */}
       <div
-        className="card shadow-lg rounded-4 p-5 mx-auto"
+        className="card shadow-lg rounded-4 p-5 mx-auto mb-5"
         style={{ maxWidth: "600px", width: "100%" }}
       >
         <h1 className="mb-4 fw-bold text-dark text-center">Post a Job</h1>
@@ -254,59 +368,82 @@ function EmployerDashboard() {
 
       {/* ✅ Employer Jobs + Applications */}
       <div className="mt-5">
-        <h3 className="fw-bold">Your Posted Jobs</h3>
+        <h3 className="fw-bold mb-4">Your Posted Jobs ({jobs.length})</h3>
         {jobs.length > 0 ? (
           <div className="row mt-3">
-            {jobs.map((job) => (
-              <div key={job.id} className="col-md-6 mb-4">
-                <div className="card shadow-sm rounded-4 p-3 h-100">
-                  <h5 className="fw-bold">{job.title}</h5>
-                  <p className="mb-1 text-muted">
-                    {job.company} — {job.location}
-                  </p>
-                  <p className="small">{job.description}</p>
+            {jobs.map((job) => {
+              const jobApplications = applications.filter(
+                (app) => app.job_id === job.id
+              );
+              return (
+                <div key={job.id} className="col-md-6 mb-4">
+                  <div className="card shadow-sm rounded-4 p-3 h-100">
+                    <h5 className="fw-bold">{job.title}</h5>
+                    <p className="mb-1 text-muted">
+                      <strong>{job.company}</strong> — {job.location}
+                    </p>
+                    <p className="small mb-3">{job.description}</p>
 
-                  <button
-                    className="btn btn-sm btn-outline-danger mb-3"
-                    onClick={() => confirmAction("delete", job)}
-                  >
-                    Delete Job
-                  </button>
+                    <div className="mb-3">
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => confirmAction("delete", job)}
+                      >
+                        Delete Job
+                      </button>
+                    </div>
 
-                  {/* ✅ Applications */}
-                  <div>
-                    <h6 className="fw-bold">Applications</h6>
-                    {applications.filter((app) => app.job_id === job.id)
-                      .length > 0 ? (
-                      applications
-                        .filter((app) => app.job_id === job.id)
-                        .map((app) => (
-                          <div
-                            key={app.id}
-                            className="d-flex justify-content-between align-items-center border rounded p-2 mb-2"
-                          >
-                            <div>
-                              <p className="mb-0 fw-semibold">{app.username}</p>
-                              <small className="text-muted">
-                                {app.cover_letter}
-                              </small>
-                            </div>
-                            <div>
-                              <span
-                                className={`badge me-2 ${
-                                  app.status === "pending"
-                                    ? "bg-warning text-dark"
-                                    : app.status === "accepted"
-                                    ? "bg-success"
-                                    : "bg-danger"
-                                }`}
-                              >
-                                {app.status}
-                              </span>
+                    {/* ✅ Applications */}
+                    <div>
+                      <h6 className="fw-bold">
+                        Applications ({jobApplications.length})
+                      </h6>
+                      {jobApplications.length > 0 ? (
+                        <div
+                          className="applications-list"
+                          style={{ maxHeight: "300px", overflowY: "auto" }}
+                        >
+                          {jobApplications.map((app) => (
+                            <div
+                              key={app.id}
+                              className="border rounded p-2 mb-2 bg-light"
+                            >
+                              <div className="d-flex justify-content-between align-items-start mb-2">
+                                <div className="flex-grow-1">
+                                  <p className="mb-1 fw-semibold">
+                                    {app.name || app.username || "Anonymous"}
+                                  </p>
+                                  {app.email && (
+                                    <small className="text-muted d-block">
+                                      {app.email}
+                                    </small>
+                                  )}
+                                </div>
+                                <span
+                                  className={`badge ${
+                                    app.status === "pending"
+                                      ? "bg-warning text-dark"
+                                      : app.status === "accepted"
+                                      ? "bg-success"
+                                      : "bg-danger"
+                                  }`}
+                                >
+                                  {app.status}
+                                </span>
+                              </div>
+
+                              {app.cover_letter && (
+                                <p className="small text-muted mb-2">
+                                  <strong>Cover Letter:</strong>{" "}
+                                  {app.cover_letter.substring(0, 100)}
+                                  {app.cover_letter.length > 100 && "..."}
+                                </p>
+                              )}
+
                               {app.status === "pending" && (
-                                <>
+                                <div className="btn-group btn-group-sm">
                                   <button
-                                    className="btn btn-sm btn-success me-2"
+                                    className="btn btn-success"
                                     onClick={() =>
                                       confirmAction("accept", null, app)
                                     }
@@ -314,28 +451,34 @@ function EmployerDashboard() {
                                     Accept
                                   </button>
                                   <button
-                                    className="btn btn-sm btn-danger"
+                                    className="btn btn-danger"
                                     onClick={() =>
                                       confirmAction("reject", null, app)
                                     }
                                   >
                                     Reject
                                   </button>
-                                </>
+                                </div>
                               )}
                             </div>
-                          </div>
-                        ))
-                    ) : (
-                      <p className="text-muted small">No applications yet.</p>
-                    )}
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-muted small">No applications yet.</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <p className="text-muted">No jobs posted yet.</p>
+          <div className="text-center py-5">
+            <p className="text-muted mb-4">No jobs posted yet.</p>
+            <p className="small text-muted">
+              Use the form above to post your first job!
+            </p>
+          </div>
         )}
       </div>
 
@@ -364,11 +507,19 @@ function EmployerDashboard() {
               <div className="modal-body">
                 <p>
                   {modalAction === "delete" &&
-                    `Are you sure you want to delete the job "${selectedJob?.title}"?`}
+                    `Are you sure you want to delete the job "${selectedJob?.title}"? This action cannot be undone and will also delete all associated applications.`}
                   {modalAction === "accept" &&
-                    `Are you sure you want to accept the application from ${selectedApp?.username}?`}
+                    `Are you sure you want to accept the application from ${
+                      selectedApp?.name ||
+                      selectedApp?.username ||
+                      "this applicant"
+                    }?`}
                   {modalAction === "reject" &&
-                    `Are you sure you want to reject the application from ${selectedApp?.username}?`}
+                    `Are you sure you want to reject the application from ${
+                      selectedApp?.name ||
+                      selectedApp?.username ||
+                      "this applicant"
+                    }?`}
                 </p>
               </div>
               <div className="modal-footer">
