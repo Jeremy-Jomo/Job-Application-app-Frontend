@@ -8,7 +8,9 @@ function JobseekerDashboard() {
 
   // ✅ 1. Load logged-in user
   useEffect(() => {
-    fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
+    fetch("https://jobconnect-zjzn.onrender.com/check-session", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.logged_in) setUser(data.user);
@@ -52,10 +54,13 @@ function JobseekerDashboard() {
     setMessage(`Withdrawing "${removedApp.job?.title || "job"}"...`);
 
     try {
-      const res = await fetch(`https://jobconnect-zjzn.onrender.com/applications/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `https://jobconnect-zjzn.onrender.com/applications/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
       if (!res.ok) throw new Error("Failed to withdraw");
       setMessage(
         `Application for "${removedApp.job?.title || "job"}" withdrawn.`
