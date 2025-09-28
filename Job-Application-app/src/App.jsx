@@ -16,29 +16,29 @@ function App() {
   const [user, setUser] = useState(null);
 
   // ✅ Check session when app mounts
-  useEffect(() => {
-    fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.logged_in) {
-          setUser(data.user);
-        }
-      })
-      .catch(() => setUser(null));
-  }, []);
+  // useEffect(() => {
+  //   fetch("https://jobconnect-zjzn.onrender.com/check-session", { credentials: "include" })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.logged_in) {
+  //         setUser(data.user);
+  //       }
+  //     })
+  //     .catch(() => setUser(null));
+  // }, []);
 
-  // ✅ Handle logout
-  const handleLogout = () => {
-    fetch("https://jobconnect-zjzn.onrender.com/logout", {
-      method: "POST",
-      credentials: "include",
-    })
-      .then(() => {
-        setUser(null);
-        window.location.href = "/login"; // redirect
-      })
-      .catch((err) => console.error("Logout error:", err));
-  };
+  // // ✅ Handle logout
+  // const handleLogout = () => {
+  //   fetch("https://jobconnect-zjzn.onrender.com/logout", {
+  //     method: "POST",
+  //     credentials: "include",
+  //   })
+  //     .then(() => {
+  //       setUser(null);
+  //       window.location.href = "/login"; // redirect
+  //     })
+  //     .catch((err) => console.error("Logout error:", err));
+  // };
 
   return (
     <Router>
