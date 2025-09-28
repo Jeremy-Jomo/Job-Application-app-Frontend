@@ -1,8 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "./", // use ./ so assets work correctly in Vercel
+  base: "/", // force assets to load from domain root
 });
