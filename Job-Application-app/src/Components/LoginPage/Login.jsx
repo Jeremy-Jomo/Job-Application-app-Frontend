@@ -24,6 +24,7 @@ function Login({ setUser }) {
         if (data.success) {
           // ✅ Save user in React state immediately
           setUser(data.user);
+          console.log("User after login:", data.user);
 
           // ✅ Redirect based on role
           if (data.user.role.toLowerCase() === "employer") {
