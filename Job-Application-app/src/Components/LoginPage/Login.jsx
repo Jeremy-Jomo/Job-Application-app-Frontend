@@ -22,16 +22,13 @@ function Login({ setUser }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          // ✅ Save user in React state immediately
+          // ✅ Save user in React state
           setUser(data.user);
           console.log("User after login:", data.user);
 
-          // ✅ Redirect based on role
-          if (data.user.role.toLowerCase() === "employer") {
-            navigate("/dashboard-employer");
-          } else {
-            navigate("/dashboard-jobseeker");
-          }
+          // ✅ Force clean reload to fix deployment bundle issue
+          // This ensures App & Navbar re-render correctly in Render/Vercel
+          window.location.href = "/";
         } else {
           setMessage(data.message || "Login failed");
         }

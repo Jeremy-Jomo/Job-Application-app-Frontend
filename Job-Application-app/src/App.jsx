@@ -1,5 +1,10 @@
-// App.jsx
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Jobs from "./jobs";
@@ -14,6 +19,7 @@ import JobseekerDashboard from "./Components/JobseekerDashboard/Jobseeker";
 
 function App() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   // ✅ Check session when app mounts
   useEffect(() => {
@@ -24,26 +30,29 @@ function App() {
       .then((data) => {
         if (data.logged_in) {
           setUser(data.user);
+        } else {
+          setUser(null);
         }
       })
       .catch(() => setUser(null));
   }, []);
 
-  // ✅ Handle logout
-  const handleLogout = () => {
-    fetch("https://jobconnect-zjzn.onrender.com/logout", {
-      method: "POST",
-      credentials: "include",
-    })
-      .then(() => {
-        setUser(null);
-        window.location.href = "/login"; // redirect
-      })
-      .catch((err) => console.error("Logout error:", err));
+  // ✅ Handle logout (no more white flash)
+  const handleLogout = async () => {
+    try {
+      await fetch("https://jobconnect-zjzn.onrender.com/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      setUser(null);
+      navigate("/login"); // smoother redirect
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
   };
 
   return (
-    <Router>
+    <>
       {/* ✅ Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark p-4 bg-dark">
         <img
@@ -60,6 +69,7 @@ function App() {
           <Link to="/jobs" className="btn btn-outline-light ms-3">
             Browse Jobs
           </Link>
+
           {user?.role?.toLowerCase() === "jobseeker" && (
             <Link
               to="/dashboard-jobseeker"
@@ -68,6 +78,7 @@ function App() {
               Dashboard
             </Link>
           )}
+
           {user?.role?.toLowerCase() === "employer" && (
             <Link
               to="/dashboard-employer"
@@ -76,6 +87,7 @@ function App() {
               Employer Dashboard
             </Link>
           )}
+
           {!user ? (
             <>
               <Link to="/login" className="btn btn-warning ms-3">
@@ -94,6 +106,7 @@ function App() {
       </nav>
 
       <hr />
+
       {/* ✅ Routes */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -105,8 +118,14 @@ function App() {
         <Route path="/register" element={<CreateAcc />} />
         <Route path="/dashboard-employer" element={<EmployerDashboard />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
-export default App;
+export default function WrappedApp() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
