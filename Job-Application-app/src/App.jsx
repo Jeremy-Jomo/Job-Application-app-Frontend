@@ -98,7 +98,7 @@ function App() {
               </Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="btn btn-danger ms-3">
+            <button onClick={handleLogout2} className="btn btn-danger ms-3">
               Logout
             </button>
           )}
